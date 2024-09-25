@@ -3,16 +3,16 @@ import requests
 import urllib.parse
 
 def create_filename(url):
-    # Parse the URL
+    
     parsed_url = urllib.parse.urlparse(url)
     
-    # Extract the path and query
+    
     path = parsed_url.path
     query = parsed_url.query
     
-    # Create a valid filename from the path and query
-    base_filename = os.path.basename(path)  # Get the last part of the path
-    if query:  # Append query parameters if they exist
+    
+    base_filename = os.path.basename(path)  
+    if query:  
         query_encoded = urllib.parse.quote(query, safe='')
         full_filename = f"{base_filename}_{query_encoded}.jpg"
     else:
@@ -22,17 +22,17 @@ def create_filename(url):
 
 def download_image(url, folder):
     try:
-        # Get the image content
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an error for bad responses
         
-        # Create a filename
+        response = requests.get(url)
+        response.raise_for_status()  
+        
+        
         filename = create_filename(url)
         
-        # Create the output folder if it doesn't exist
+        
         os.makedirs(folder, exist_ok=True)
         
-        # Save the image
+        
         with open(os.path.join(folder, filename), 'wb') as f:
             f.write(response.content)
         print(f"Downloaded: {filename}")
@@ -40,18 +40,18 @@ def download_image(url, folder):
         print(f"Failed to download {url}. Reason: {e}")
 
 def download_images_from_file(txt_file, folder):
-    # Read the links from the text file
+    
     with open(txt_file, 'r') as file:
         links = file.readlines()
 
-    # Download each image
+    
     for link in links:
-        link = link.strip()  # Remove any surrounding whitespace
-        if link:  # Ensure the link is not empty
+        link = link.strip()  
+        if link:  
             download_image(link, folder)
 
-# Example usage
-txt_file_path = 'dhd_links.txt'  # Change this to your text file path
-output_folder = 'downloaded_images'  # Folder where images will be saved
+
+txt_file_path = 'dhd_links.txt'  
+output_folder = 'downloaded_images'  
 
 download_images_from_file(txt_file_path, output_folder)
